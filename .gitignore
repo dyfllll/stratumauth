@@ -331,3 +331,5 @@ ASALocalRun/
 **/Resources/Resource.[Dd]esigner.cs
 .env
 fastlane/report.xml
+AWSConfig.cs
+release.keystore

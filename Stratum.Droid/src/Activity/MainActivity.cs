@@ -1610,6 +1610,7 @@ namespace Stratum.Droid.Activity
                 {
                     var data = await encryption.EncryptAsync(backup, password);
                     await FileUtil.WriteFileAsync(this, destination, data);
+                    await AWSUtility.HttpPutAsync(AWSConfig.Bucket, $"{AWSConfig.UploadFolder}{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}-manual.stratum", data);
                 }
                 catch (Exception e)
                 {

@@ -122,6 +122,7 @@ namespace Stratum.Droid
             }
 
             await FileUtil.WriteFileAsync(_context, file.Uri, dataToWrite);
+            await AWSUtility.HttpPutAsync(AWSConfig.Bucket, $"{AWSConfig.UploadFolder}{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}-auto.stratum", dataToWrite);
             return new BackupResult(file.Name);
         }
 
