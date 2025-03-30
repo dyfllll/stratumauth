@@ -11,6 +11,16 @@ using System.Net.Http;
 
 namespace Stratum.Droid
 {
+    //public class AWSConfig
+    //{
+    //    public static string SecretId = "";
+    //    public static string SecretKey = "";
+    //    public static string Endpoint = "";
+    //    public static string Bucket = "";
+    //    public static string Region = "us-east-1";
+    //    public static bool ForcePathStyle = true;
+    //    public static string UploadFolder = "";
+    //}
     public class AWSUtility
     {
         public static string awsAccessKeyId => AWSConfig.SecretId;
@@ -110,21 +120,23 @@ namespace Stratum.Droid
 
 
         public static async Task<HttpResponseMessage> HttpListObjectAsync(string bucketName, string prefix, string delimiter = "", string startAfter = "",
-            int maxKeys = 1000, string ContinuationToken = "")
+                   int maxKeys = 1000, string continuationToken = "")
         {
+            string encodeToken = string.IsNullOrEmpty(continuationToken) ? continuationToken : UrlEncode(continuationToken, false);
             string filename = "";
             string resPath = string.Format("/{0}/{1}", bucketName, filename);
-            string url = $"{Endpoint}{bucketName}/{filename}?list-type=2&max-keys={maxKeys}&prefix={prefix}&delimiter={delimiter}&start-after={startAfter}&continuation-token={ContinuationToken}";
+            string url = $"{Endpoint}{bucketName}/{filename}?list-type=2&continuation-token={encodeToken}&delimiter={delimiter}&max-keys={maxKeys}&prefix={prefix}&start-after={startAfter}";
 
             using (var client = new HttpClient())
             {
                 Dictionary<string, string> Querys = new Dictionary<string, string>();
                 Querys.Add("list-type", "2");
+                Querys.Add("continuation-token", continuationToken);
+                Querys.Add("delimiter", delimiter);
                 Querys.Add("max-keys", maxKeys.ToString());
                 Querys.Add("prefix", prefix);
-                Querys.Add("delimiter", delimiter);
                 Querys.Add("start-after", startAfter);
-                Querys.Add("continuation-token", ContinuationToken);
+
 
                 Dictionary<string, string> Headers = new Dictionary<string, string>();
                 string authorization = SignHeader(resPath, "GET", Headers, null, Querys);
